@@ -59,10 +59,6 @@ body {
     fill: orange;
     font-size: 25px;
   }
-  .ssm-text {
-    fill: #ff7a7a;
-    font-size: 18px;
-  }
   .line-ref {
     fill: none;
     stroke: orange;
@@ -78,6 +74,10 @@ body {
     fill: black;
   }
   .ssm-legend-text {
+    font-size: 18px;
+  }
+  .ssm-text {
+    fill: #ff4a4a;
     font-size: 18px;
   }
   

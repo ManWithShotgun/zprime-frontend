@@ -86,7 +86,49 @@ export class Graph {
             [4468.42508385474, 0.000374905054734916],
             [4995.17238950382, 0.000394129240239056]
           ];
-          
+          var dataSsm001 = [
+            [8.59165449529164, 1.06178857435021],
+            [99.3760798873023, 1.15128488626385],
+            [222.230493024433, 1.19144730357768],
+            [315.186338782478, 1.21323273909261],
+            [413.033691288169, 1.21308845227264],
+            [566.327398615062, 1.20063904156244],
+            [662.543579300040, 1.19080980458061],
+            [757.127440327453, 1.14339458712534],
+            [795.178423299542, 1.12496111020824],
+            [886.500992869312, 1.08675691414999],
+            [1044.13964529584, 0.991876112300337],
+            [1174.05555075058, 0.918239146783523],
+            [1471.38986992273, 0.698270266164395],
+            [2138.88550436439, 0.294353459014719],
+            [2841.70227878329, 0.0949642731795702],
+            [3536.36453324161, 0.0302675143064834],
+            [4327.23866399672, 0.00873436711509305],
+            [4986.57853498789, 0.00354294832982600]
+          ];
+          var dataSsm0002 = [
+            [7.35227765362328, 0.0422911853669169],
+            [92.7004520583269, 0.0455782905395418],
+            [186.200850749892, 0.0473614726175304],
+            [283.505276424271, 0.0480322079110225],
+            [377.004718585126, 0.0489104373218941],
+            [475.939168243364, 0.0488055827214477],
+            [572.699614902649, 0.0490973299440967],
+            [664.023141003129, 0.0484006224406146],
+            [755.347049715894, 0.0481020169254173],
+            [853.193541343945, 0.0472273178425408],
+            [951.040032971996, 0.0463685245061274],
+            [1083.67478131843, 0.0437158137398881],
+            [1427.22110783206, 0.0379970464081949],
+            [1992.00275281886, 0.0276261539663936],
+            [2643.75283958098, 0.0173228149410967],
+            [3113.94488435611, 0.0116157246209434],
+            [3578.15622086348, 0.00760185361320799],
+            [3945.06657520703, 0.00527665565983102],
+            [4126.61916496897, 0.00439621966472274],
+            [4403.84032158409, 0.00333639860164256],
+            [4989.81065225887, 0.00189836394573680]
+          ];
           
         //   var margin = {top: 20, right: 30, bottom: 60, left: 60},
         //       width = 760 - margin.left - margin.right,
@@ -330,7 +372,7 @@ export class Graph {
         //     //<!-- end -->
 
         let main: MainGraph = new MainGraph("div#svg");
-        main.init(data);
+        main.init(dataSsm001, dataSsm0002);
 
     }
 }
@@ -341,6 +383,7 @@ class MainGraph {
     public static x;
     public static y;
 
+    // example:
     // {
     //     x: 110,
     //     y: 80,
@@ -361,7 +404,7 @@ class MainGraph {
 
     }
 
-    public init(data) {
+    public init(dataSsm1, dataSsm2) {
         let margin = {top: 20, right: 30, bottom: 60, left: 60},
             width = 760 - margin.left - margin.right,
             height = 500 - margin.top - margin.bottom;
@@ -415,6 +458,46 @@ class MainGraph {
             .call(yAxisSub);
 
 
+
+        // render main legend
+        MainGraph.renderSvg({
+            x: 300,
+            y: -150,
+            width: 400,
+            height: 400,
+            href: 'https://cdn1.savepice.ru/uploads/2017/11/9/23a327011c5f481a636de5fefb242ca0-full.png'
+        });
+
+        let ssmData = [{
+            data: dataSsm1,
+            render: true,
+            legend: {
+                text: 'ssm N'
+            },
+            text: {
+                text: '001',
+                x: 170,
+                y: 140
+            }
+        },
+        {
+            data: dataSsm2,
+            render: true,
+            legend: {
+                text: 'ssm N'
+            },
+            text: {
+                text: '0002',
+                x: 270,
+                y: 140
+            }
+        }];
+
+        new SSMContainer(ssmData);
+        
+    }
+
+    private renderObserved(data) {
         new GraphArea({
             data,
             class: 'yellow-area',
@@ -425,29 +508,44 @@ class MainGraph {
             class: 'green-area',
             offset: 15
         });
-        let lineBase: SSMLine = new SSMLine({
-            data,
-            interpolate: 'monotone',
-            class: 'ssm-line',
-            render: true
-        });
+    }
+
+    private renderRef(data) {
         new GraphText({
             text: 'Reference model',
             class: 'ref-text',
             x: 70,
             y: 40
         });
-        
     }
 }
 
 class SSMContainer {
+    private static INTORPOLATE = 'monotone';
+    private static LINE_CLASS = 'ssm-line';
+    private static TEXT_CLASS = 'ssm-text';
+    private static LEGEND_CLASS = 'ssm-legend-text';
+
+    private static LEGEND_START_X = 470;
+    private static LEGEND_START_Y = 150;
+    private static LEGEND_STEP_Y = 20;
 
     private lines: SSMLine[];
 
     constructor(linesConf: any[]) {
-        linesConf.forEach((conf, i) => {
-            this.lines[i] = new SSMLine({data: conf.data});
+        this.lines = linesConf.map((conf, i) => {
+            conf.interpolate = SSMContainer.INTORPOLATE;
+            conf.class = SSMContainer.LINE_CLASS;
+            // set text config
+            conf.text.class = SSMContainer.TEXT_CLASS; 
+            if (i === 0) {
+                conf.text.urlZ = true;
+            }
+            //set legend config
+            conf.legend.x = SSMContainer.LEGEND_START_X;
+            conf.legend.y = SSMContainer.LEGEND_START_Y + SSMContainer.LEGEND_STEP_Y * i;
+            conf.legend.class = SSMContainer.LEGEND_CLASS;
+            return new SSMLine(conf);
         });
     }
     
@@ -505,7 +603,7 @@ class GraphArea {
 }
 
 class GraphText {
-    private textSign: {text: string, x, y};
+    protected textSign: {text: string, x, y};
     private textView;
     constructor(textConfig: any) {
         this.textSign = {
@@ -520,38 +618,68 @@ class GraphText {
             .text(this.textSign.text);
     }
 
-    protected updateText(text) {
+    public updateText(text) {
         this.textSign.text = text;
         this.textView.text(this.textSign.text);
     }
 }
 
+// example:
+// {
+//     text: '=0.01',
+//     class: 'ssm-text',
+//     x: 170,
+//     y: 140,
+//     urlZ: true
+// }
 class SSMText extends GraphText {
-    private static urlZ: string = '';
-    private static urlE: string = '';
+    private static urlZ: string = 'http://svgshare.com/i/3p9.svg';
+    private static urlE: string = 'http://svgshare.com/i/3sF.svg';
     constructor(textConfig: any) {
         super(textConfig);
-        MainGraph.renderSvg({
-            x: 110,
-            y: 80,
-            width: 45,
-            height: 45,
-            href: 'http://svgshare.com/i/3p9.svg'
-        });
-        // render svg E
+        this.renderE();
+        if (textConfig.urlZ) {
+            this.renderZ();
+        }
     }
 
-    
+    private renderZ() {
+        MainGraph.renderSvg({
+            x: this.textSign.x - 70,
+            y: this.textSign.y - 30,
+            width: 45,
+            height: 45,
+            href: SSMText.urlZ
+        });
+    }
+
+    private renderE() {
+        MainGraph.renderSvg({
+            x: this.textSign.x - 18,
+            y: this.textSign.y - 16,
+            width: 22,
+            height: 22,
+            href: SSMText.urlE
+        });
+    }
 }
 
 class SSMLine extends GraphLine {
-
     private bisectDate = d3.bisector(function(d) { return d[0]; }).left;
     private formatValueY = d3.format(",.4f");
     private formatValueX = d3.format(",.0f");
+    private legendView: GraphText;
+    private legendText: string;
 
     constructor(lineConfig: any) {
         super(lineConfig);
+        // set text
+        if(lineConfig.text) {
+            new SSMText(lineConfig.text);
+        }
+        // set dinamic legend for line
+        this.legendText = lineConfig.legend.text;
+        this.legendView = new GraphText(lineConfig.legend);
     }
 
     updateText(x): void {
@@ -559,6 +687,14 @@ class SSMLine extends GraphLine {
             d0 = this.data[i - 1],
             d1 = this.data[i],
             d = x - d0[0] > d1[0] - x ? d1 : d0;
-        
+        // update text legend
+        // this.legendView.updateText(this.legendText + ' hello');
     }
+}
+
+
+class FocusModule {
+    // add checkLine
+    // focus ciecle and text ?? for each line *? mb add it in SSMLine
+    // focus rect overlay with functions: mouseover, mouseout, mousemove
 }
