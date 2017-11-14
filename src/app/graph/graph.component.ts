@@ -341,6 +341,22 @@ class MainGraph {
     public static x;
     public static y;
 
+    // {
+    //     x: 110,
+    //     y: 80,
+    //     width: 45,
+    //     height: 45,
+    //     href: 'http://svgshare.com/i/3p9.svg'
+    // }
+    public static renderSvg(conf): any {
+        return MainGraph.svg.append("svg:image")
+            .attr('x', conf.x)
+            .attr('y', conf.y)
+            .attr('width', conf.width)
+            .attr('height', conf.height)
+            .attr("xlink:href", conf.href);
+    }
+
     constructor(private selector: string) {
 
     }
@@ -490,18 +506,42 @@ class GraphArea {
 
 class GraphText {
     private textSign: {text: string, x, y};
+    private textView;
     constructor(textConfig: any) {
         this.textSign = {
             text: textConfig.text,
             x: textConfig.x,
             y: textConfig.y
         };
-        MainGraph.svg.append("text")
+        this.textView = MainGraph.svg.append("text")
             .attr("class", textConfig.class)
             .attr("x", this.textSign.x)         
             .attr("y", this.textSign.y)         
             .text(this.textSign.text);
     }
+
+    protected updateText(text) {
+        this.textSign.text = text;
+        this.textView.text(this.textSign.text);
+    }
+}
+
+class SSMText extends GraphText {
+    private static urlZ: string = '';
+    private static urlE: string = '';
+    constructor(textConfig: any) {
+        super(textConfig);
+        MainGraph.renderSvg({
+            x: 110,
+            y: 80,
+            width: 45,
+            height: 45,
+            href: 'http://svgshare.com/i/3p9.svg'
+        });
+        // render svg E
+    }
+
+    
 }
 
 class SSMLine extends GraphLine {
