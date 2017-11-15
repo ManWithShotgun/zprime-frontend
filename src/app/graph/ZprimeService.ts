@@ -40,6 +40,17 @@ export class ZprimeService {
 
     /* !!! SERVERICE REALIZATION !!! */
 
+    /*
+    * for SSM lines:
+    * 1. ask on server all points which exist; getSSMData(xi = 0.01); or from chache or new request to server ??
+    * 2. check points in chahe; set the check in method getSSDataPoint(xi, x); ask for each point from SSMLine
+    * 3. ask on server point that are missing: getSSDataPoint(xi, x)
+
+        When start: if chahe empty 
+                    -> ask server; if server empty 
+                    -> request (minimal need) points x = 0 and x = 5000;
+    */
+
     public getObservedData(): Promise<any> {
         return this.sendHttpRequest()
             .then((response) => {

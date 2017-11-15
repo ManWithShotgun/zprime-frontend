@@ -520,16 +520,21 @@ class SSMLine extends GraphLine {
         //     this.data[3] = [this.data[3][0], 8];
         //     this.setData(this.data);
         // }, 5000);
+
+        // ?? invoke request for each x point async ??
+        //
     }
 
     public updateX(x): void {
-        let i = this.bisectDate(this.data, x, 1),
-            d0 = this.data[i - 1],
-            d1 = this.data[i], //excaption when check line sooo right side
-            d = x - d0[0] > d1[0] - x ? d1 : d0;
-        this.updateText(d);
-        // update focus: circle and text circle
-        this.updateFocus(d);
+        let i = this.bisectDate(this.data, x, 1);
+        if (i < this.data.length) {
+            let d0 = this.data[i - 1],
+                d1 = this.data[i], //excaption when check line sooo right side
+                d = x - d0[0] > d1[0] - x ? d1 : d0;
+            this.updateText(d);
+            // update focus: circle and text circle
+            this.updateFocus(d);
+        }
     }
 
     private updateText(d): void {
