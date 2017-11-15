@@ -372,7 +372,7 @@ export class Graph {
         //     //<!-- end -->
 
         let main: MainGraph = new MainGraph("div#svg");
-        main.init(dataSsm001, dataSsm0002);
+        main.init(dataSsm001, dataSsm0002, dataRef);
 
     }
 }
@@ -382,6 +382,9 @@ class MainGraph {
     public static svg;
     public static x;
     public static y;
+    public static logPen;
+    private domainX = [1, 5000];
+    private domainY = [Math.pow(10, -4), Math.pow(10, 1)];
 
     // example:
     // {
@@ -404,17 +407,22 @@ class MainGraph {
 
     }
 
-    public init(dataSsm1, dataSsm2) {
+    public init(dataSsm1, dataSsm2, dataRef) {
         let margin = {top: 20, right: 30, bottom: 60, left: 60},
             width = 760 - margin.left - margin.right,
             height = 500 - margin.top - margin.bottom;
         MainGraph.x = d3.scale.linear()
-            .domain([1, 5000])
+            .domain(this.domainX)
             .range([0, width]);
         
         MainGraph.y = d3.scale.log()
-            .domain([Math.pow(10, -4), Math.pow(10, 1)])
+            .domain(this.domainY)
             .range([height, 0]);
+
+        MainGraph.logPen = d3.svg.line()
+            .interpolate("monotone")
+            .x(function(d) { return MainGraph.x(d[0]); })
+            .y(function(d) { return MainGraph.y(d[1]); });
         
         let xAxis = d3.svg.axis()
             .scale(MainGraph.x)
@@ -457,6 +465,20 @@ class MainGraph {
             .style("font-size", "8px")
             .call(yAxisSub);
 
+        // x sign
+        MainGraph.svg.append("text")
+            .attr("class", 'axis-sign')
+            .attr("x", width/2 - 50)         
+            .attr("y", height + 40)     
+            .text("Mz(GeV)");
+        // y sign 
+        MainGraph.svg.append("text")
+            .attr("class", 'axis-sign')
+            .attr("text-anchor", "middle")
+            .attr("transform", "translate(-" + margin.right + "," + height/2 + ") rotate(270)")
+            .text("...(pb)"); 
+
+        this.renderRef(dataRef);
 
 
         // render main legend
@@ -472,7 +494,7 @@ class MainGraph {
             data: dataSsm1,
             render: true,
             legend: {
-                text: 'ssm N'
+                text: 'ssm 0.01:'
             },
             text: {
                 text: '001',
@@ -484,7 +506,7 @@ class MainGraph {
             data: dataSsm2,
             render: true,
             legend: {
-                text: 'ssm N'
+                text: 'ssm 0.002:'
             },
             text: {
                 text: '0002',
@@ -494,6 +516,9 @@ class MainGraph {
         }];
 
         new SSMContainer(ssmData);
+
+        new FocusModule(width, height, this.domainX, this.domainY);
+        // disable loading
         
     }
 
@@ -510,6 +535,11 @@ class MainGraph {
         });
     }
 
+    private renderExpected(data) {
+        // rend line
+        // rend areas
+    }
+
     private renderRef(data) {
         new GraphText({
             text: 'Reference model',
@@ -517,10 +547,27 @@ class MainGraph {
             x: 70,
             y: 40
         });
+
+        let temp = MainGraph.svg.selectAll(".rectangles");
+
+        MainGraph.svg.append("path")
+		    .datum(data)
+            .attr("class", "line-ref")
+            .attr("d", MainGraph.logPen);
+        // elements with class .rectangles isn't exist
+        MainGraph.svg.selectAll(".rectangles")
+            .data(data)
+            .enter().append("rect")
+            .attr("x", MainGraph.logPen.x())
+            .attr("y", function(d) { return MainGraph.y(d[1]) - 2; })
+            .style("fill", "blue")
+            .attr("width", 5)
+            .attr("height", 7);
     }
 }
 
 class SSMContainer {
+    private static context;
     private static INTORPOLATE = 'monotone';
     private static LINE_CLASS = 'ssm-line';
     private static TEXT_CLASS = 'ssm-text';
@@ -533,6 +580,7 @@ class SSMContainer {
     private lines: SSMLine[];
 
     constructor(linesConf: any[]) {
+        SSMContainer.context = this;
         this.lines = linesConf.map((conf, i) => {
             conf.interpolate = SSMContainer.INTORPOLATE;
             conf.class = SSMContainer.LINE_CLASS;
@@ -541,11 +589,21 @@ class SSMContainer {
             if (i === 0) {
                 conf.text.urlZ = true;
             }
-            //set legend config
+            // set legend config
             conf.legend.x = SSMContainer.LEGEND_START_X;
             conf.legend.y = SSMContainer.LEGEND_START_Y + SSMContainer.LEGEND_STEP_Y * i;
             conf.legend.class = SSMContainer.LEGEND_CLASS;
             return new SSMLine(conf);
+        });
+    }
+
+    public static updateX(x0) {
+        SSMContainer.context.updateX(x0);
+    }
+
+    private updateX(x0) {
+        this.lines.forEach((line) => {
+            line.updateX(x0);
         });
     }
     
@@ -682,13 +740,18 @@ class SSMLine extends GraphLine {
         this.legendView = new GraphText(lineConfig.legend);
     }
 
-    updateText(x): void {
+    public updateX(x): void {
+        this.updateText(x);
+        // update focus: circle and text
+    }
+
+    private updateText(x): void {
         let i = this.bisectDate(this.data, x, 1),
             d0 = this.data[i - 1],
-            d1 = this.data[i],
+            d1 = this.data[i], //excaption when check line sooo right side
             d = x - d0[0] > d1[0] - x ? d1 : d0;
         // update text legend
-        // this.legendView.updateText(this.legendText + ' hello');
+        this.legendView.updateText(this.legendText + ' ' + this.formatValueY(d[1]));
     }
 }
 
@@ -697,4 +760,49 @@ class FocusModule {
     // add checkLine
     // focus ciecle and text ?? for each line *? mb add it in SSMLine
     // focus rect overlay with functions: mouseover, mouseout, mousemove
+    private static context;
+    private checkLine;
+
+    constructor(width, height, domainX, domainY) {
+        FocusModule.context = this;
+        var focus = MainGraph.svg.append("g")
+        .attr("class", "focus")
+        .style("display", "none");
+
+        MainGraph.svg.append("rect")
+            .attr("class", "overlay")
+            .attr("width", width)
+            .attr("height", height)
+            .on("mouseover", function() { focus.style("display", null); })
+            .on("mouseout", function() { focus.style("display", "none"); })
+            .on("mousemove", this.mousemove);
+        this.initCheckLine(domainX, domainY);
+    }
+
+    private initCheckLine(domainX, domainY) {
+        this.checkLine = MainGraph.svg.append("path")
+            .attr("class", "ssm-line")
+            .attr("d", function(d){
+                return MainGraph.logPen([
+                    [domainX[0], domainY[1]], 
+                    [domainX[0], domainY[0]]
+                ]);
+        });
+    }
+
+
+
+    public mousemove() {
+        let x0 = MainGraph.x.invert(d3.mouse(this)[0]);
+    //   focus.attr("transform", "translate(" + x(d[0]) + "," + y(d[1]) + ")");
+        // this.checkLine.attr('transform', 'translate(' + MainGraph.x(x0) + ')');
+        FocusModule.context.mouseMoveInvoke(x0);
+    }
+
+    public mouseMoveInvoke(x0) {
+        this.checkLine.attr('transform', 'translate(' + MainGraph.x(x0) + ')');
+        // invoke SSMContainer change X
+        SSMContainer.updateX(x0);
+    }
+
 }

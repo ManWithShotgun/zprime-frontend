@@ -80,4 +80,8 @@ body {
     fill: #ff4a4a;
     font-size: 18px;
   }
+  .axis-sign {
+    stroke: black;
+    font-size: 22px;
+  }
   
