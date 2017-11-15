@@ -1,11 +1,12 @@
-import { Component, ViewEncapsulation } from '@angular/core';
 import * as d3 from 'd3';
+import { Component, ViewEncapsulation } from '@angular/core';
+import { ZprimeService } from './ZprimeService';
 
 @Component({
-selector: 'graph-comp',
-templateUrl: './graph.component.html',
-encapsulation: ViewEncapsulation.None,
-styleUrls: ['./graph.component.css']
+    selector: 'graph-comp',
+    templateUrl: './graph.component.html',
+    encapsulation: ViewEncapsulation.None,
+    styleUrls: ['./graph.component.css']
 })
 export class Graph { 
 
@@ -129,247 +130,6 @@ export class Graph {
             [4403.84032158409, 0.00333639860164256],
             [4989.81065225887, 0.00189836394573680]
           ];
-          
-        //   var margin = {top: 20, right: 30, bottom: 60, left: 60},
-        //       width = 760 - margin.left - margin.right,
-        //       height = 500 - margin.top - margin.bottom;
-          
-        //   var x = d3.scale.linear()
-        //       .domain([1, 5000])
-        //       .range([0, width]);
-          
-        //   var y = d3.scale.log()
-        //       .domain([Math.pow(10, -4), Math.pow(10, 1)])
-        //       .range([height, 0]);
-          
-        //   var xAxis = d3.svg.axis()
-        //       .scale(x)
-        //       .orient("bottom");
-          
-        //   var yAxis = d3.svg.axis()
-        //       .scale(y)
-        //       .orient("left")
-        //       .ticks(0, "e")
-        //       .tickFormat(function (d) {
-        //           var log = Math.log(d) / Math.LN10;
-        //           return Math.abs(Math.round(log) - log) < 1e-6 ? 10 : '';
-        //       });
-        //   var yAxisSub = d3.svg.axis()
-        //       .scale(y)
-        //       .orient('left')
-        //       .ticks(0, "e")
-        //       .tickFormat(function (d) {
-        //         var log = Math.log(d) / Math.LN10;
-        //         return Math.abs(Math.round(log) - log) < 1e-6 ? Math.round(log) : '';
-        //       });
-          
-          
-        //   var line = d3.svg.line()
-        //       .interpolate("monotone")
-        //       .x(function(d) { return x(d[0]); })
-        //       .y(function(d) { return y(d[1]); });
-              
-        //   var lineObserved = d3.svg.line()
-        //       .x(function(d) { return x(d[0]); })
-        //       .y(function(d) { return y(d[1]); });
-              
-          
-        //   var svg = d3.select("div#svg").append("svg")
-        //       .datum(data)
-        //       .attr("width", width + margin.left + margin.right)
-        //       .attr("height", height + margin.top + margin.bottom)
-        //     .append("g")
-        //       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-              
-        //   //<!-- focus -->
-          
-        //   var bisectDate = d3.bisector(function(d) { return d[0]; }).left,
-        //       formatValue = d3.format(",.2f"),
-        //       formatCurrency = function(d) { return "$" + formatValue(d); };
-              
-        //   var focus = svg.append("g")
-        //     .attr("class", "focus")
-        //     .style("display", "none");
-          
-        //   focus.append("circle")
-        //     .attr("r", 4.5);
-          
-        //   focus.append("text")
-        //     .attr("x", 9)
-        //     .attr("dy", ".35em");
-        //   svg.append("rect")
-        //     .attr("class", "overlay")
-        //     .attr("width", width)
-        //     .attr("height", height)
-        //     .on("mouseover", function() { focus.style("display", null); })
-        //     .on("mouseout", function() { focus.style("display", "none"); })
-        //     .on("mousemove", mousemove);
-          
-        //   function mousemove() {
-        //       var x0 = x.invert(d3.mouse(this)[0]),
-        //         y0 = y.invert(d3.mouse(this)[1]),
-        //       i = bisectDate(data, x0, 1),
-        //         d0 = data[i - 1],
-        //         d1 = data[i],
-        //         d = x0 - d0[0] > d1[0] - x0 ? d1 : d0;
-        //     focus.attr("transform", "translate(" + x(d[0]) + "," + y(d[1]) + ")");
-        //     focus.select("text").text(d[1] + ' : ' + d[0]);
-        //   }
-        //   //<!-- end focus -->
-          
-        //   //!-- legend -->
-        //   //var color = d3.scale.category10();
-        //   //var seriesNames = ['abc', 'zxc', 'esd'];
-        //   //
-        //   //var legend = svg.append("g")
-        //   //      .attr("class", "legend")
-        //   //    .selectAll("g")
-        //   //      .data(seriesNames)
-        //   //    .enter().append("g")
-        //   //      .attr("transform", function(d, i) { return "translate(" + (width - 120) + "," + (i * 20) + "),scale(2)"; });
-        //   //
-        //   //  legend.append("line")
-        //   //      .style("stroke", function(d, i) { return color(i); })
-        //   //      .attr("x2", 20);
-        //   //
-        //   //  legend.append("text")
-        //   //      .attr("dy", ".35em")
-        //   //      .attr("x", 26)
-        //   //      .text(function(d) { return "name: " + d; });
-        //   //<!-- end legend -->
-          
-        //   //<!-- area -->
-        //   var area = d3.svg.area()
-        //       .interpolate("basis")
-        //       .x(function(d) { return x(d[0]); })
-        //       .y0(function(d) { return y(d[1]) + 15;})
-        //       .y1(function(d) { return y(d[1]) - 15; });
-              
-        //   var area2 = d3.svg.area()
-        //     .interpolate("basis")
-        //     .x(function(d) { return x(d[0]); })
-        //     .y0(function(d) { return y(d[1]) + 25;})
-        //     .y1(function(d) { return y(d[1]) - 25; });
-          
-        //   svg.append("path")
-        //     .attr("class", "area yellow-area")
-        //     .attr("d", area2);
-        //   svg.append("path")
-        //     .attr("class", "area grean-area")
-        //     .attr("d", area);
-        //   //<!-- end area -->
-          
-        //   svg.append("g")
-        //       .attr("class", "x axis")
-        //       .attr("transform", "translate(0," + height + ")")
-        //       .call(xAxis);
-          
-        //   svg.append("g")
-        //       .attr("class", "y axis")
-        //       .call(yAxis);
-        //   svg.append('g')
-        //     .attr("class", "y axis-y-sub")
-        //     .attr("transform", "translate(5, -8)")
-        //     .style("font-size", "8px")
-        //     .call(yAxisSub);
-        //   //<!-- ssm line style-->
-        //   //svg.append("path")
-        //   //    .style("stroke-dasharray", ("6, 3, 3, 3"))
-        //   //    .attr("class", "line")
-        //   //    .attr("d", line);
-        //   //<!-- end -->
-          
-        //   //<!-- line in areas style-->
-        //   svg.append("path")
-        //       .style("stroke-dasharray", ("5, 3"))
-        //       .attr("class", "line-in-area")
-        //       .attr("d", line);
-        //   //<!-- end --> 		
-          
-        //   svg.append("path")
-        //           .datum(dataObserved)
-        //       .attr("class", "line-in-area")
-        //       .attr("d", lineObserved);
-          
-          
-        //   //<!-- SSM text -->
-        //   svg.append("svg:image")
-        //     .attr('x', 110)
-        //     .attr('y', 50)
-        //     .attr('width', 45)
-        //     .attr('height', 45)
-        //     // image file: legedsZprime.png
-        //     .attr("xlink:href", "http://svgshare.com/i/3p9.svg");
-        //   svg.append("text")
-        //     .attr("class", 'ssm-text')
-        //     .attr("x", 160)         
-        //     .attr("y", 80)         
-        //       .text("=0.005");
-        //   //<!-- end -->
-          
-        //   //<!-- ref text -->
-        //   svg.append("text")
-        //       .attr("class", 'ref-text')
-        //       .attr("x", 70)         
-        //       .attr("y", 40)         
-        //       .text("Reference model");
-              
-              
-        //   //<!-- end -->
-          
-        //   //<!-- x text -->
-        //   svg.append("text")
-        //       .attr("class", 'ref-text')
-        //       .attr("x", width/2 - 50)         
-        //       .attr("y", height + 40)     
-        //       .text("Mz(GeV)");  
-        //   //<!-- end -->
-        //   //<!-- y text -->
-        //   svg.append("text")
-        //       .attr("class", 'ref-text')
-        //       .attr("text-anchor", "middle")
-        //         .attr("transform", "translate(-30,200) rotate(270)")    
-        //       .text("...(pb)");  
-        //   //<!-- end -->
-              
-        //   //  svg.append("path")
-        //   //    .attr("class", "line")
-        //   //    .attr("d", line);
-          
-        //   //<!-- rect for reference line -->
-        //   svg.append("path")
-        //           .datum(dataRef)
-        //       .attr("class", "line-ref")
-        //       .attr("d", line);
-        //   svg.selectAll(".rectangles")
-        //       .data(dataRef)
-        //         .enter().append("rect")
-        //       .attr("x", line.x())
-        //       .attr("y", function(d) { return y(d[1]) - 2; })
-        //       .style("fill", "blue")
-        //       .attr("width", 5)
-        //       .attr("height", 7);
-        //   //<!-- end -->
-          
-        //   //<!-- circle for middle line -->
-        //   svg.selectAll(".dot")
-        //       .data(dataObserved)
-        //     .enter().append("circle")
-        //       .attr("class", "dot-middle-line")
-        //       .attr("cx", line.x())
-        //       .attr("cy", line.y())
-        //       .attr("r", 3.5);
-        //   //<!-- end -->
-          
-        //   //<!-- legend image -->
-        //   svg.append("svg:image")
-        //     .attr('x', 300)
-        //     .attr('y', -150)
-        //     .attr('width', 400)
-        //     .attr('height', 400)
-        //     // image file: legedsZprime.png
-        //     .attr("xlink:href", "https://cdn1.savepice.ru/uploads/2017/11/9/23a327011c5f481a636de5fefb242ca0-full.png");
-        //     //<!-- end -->
 
         let main: MainGraph = new MainGraph("div#svg");
         main.init(dataSsm001, dataSsm0002, dataRef);
@@ -404,7 +164,7 @@ class MainGraph {
     }
 
     constructor(private selector: string) {
-
+        // create promise chain and end set .then(init)
     }
 
     public init(dataSsm1, dataSsm2, dataRef) {
@@ -639,6 +399,12 @@ class GraphLine {
             this.lienView.attr("d", this.line);
         }
     }
+
+    protected setData(data) {
+        this.data = data;
+        this.lienView.datum(this.data);
+        this.lienView.attr("d", this.line);
+    }
 }
 
 class GraphArea {
@@ -728,6 +494,7 @@ class SSMLine extends GraphLine {
     private formatValueX = d3.format(",.0f");
     private legendView: GraphText;
     private legendText: string;
+    private focusGroup;
 
     constructor(lineConfig: any) {
         super(lineConfig);
@@ -738,28 +505,47 @@ class SSMLine extends GraphLine {
         // set dinamic legend for line
         this.legendText = lineConfig.legend.text;
         this.legendView = new GraphText(lineConfig.legend);
+        // set focus group
+        this.focusGroup = MainGraph.svg.append("g")
+            .attr("class", "focus")
+            .style("display", "none");
+      
+        this.focusGroup.append("circle")
+            .attr("r", 4.5);
+        
+        this.focusGroup.append("text")
+            .attr("x", 9)
+            .attr("dy", ".35em");
+        // setTimeout(() => {
+        //     this.data[3] = [this.data[3][0], 8];
+        //     this.setData(this.data);
+        // }, 5000);
     }
 
     public updateX(x): void {
-        this.updateText(x);
-        // update focus: circle and text
-    }
-
-    private updateText(x): void {
         let i = this.bisectDate(this.data, x, 1),
             d0 = this.data[i - 1],
             d1 = this.data[i], //excaption when check line sooo right side
             d = x - d0[0] > d1[0] - x ? d1 : d0;
+        this.updateText(d);
+        // update focus: circle and text circle
+        this.updateFocus(d);
+    }
+
+    private updateText(d): void {
         // update text legend
         this.legendView.updateText(this.legendText + ' ' + this.formatValueY(d[1]));
+    }
+
+    private updateFocus(d) {
+        this.focusGroup.attr("transform", "translate(" + MainGraph.x(d[0]) + "," + MainGraph.y(d[1]) + ")");
+        this.focusGroup.style("display", null);
+        this.focusGroup.select("text").text(this.formatValueX(d[0]));
     }
 }
 
 
 class FocusModule {
-    // add checkLine
-    // focus ciecle and text ?? for each line *? mb add it in SSMLine
-    // focus rect overlay with functions: mouseover, mouseout, mousemove
     private static context;
     private checkLine;
 
@@ -790,12 +576,8 @@ class FocusModule {
         });
     }
 
-
-
     public mousemove() {
         let x0 = MainGraph.x.invert(d3.mouse(this)[0]);
-    //   focus.attr("transform", "translate(" + x(d[0]) + "," + y(d[1]) + ")");
-        // this.checkLine.attr('transform', 'translate(' + MainGraph.x(x0) + ')');
         FocusModule.context.mouseMoveInvoke(x0);
     }
 
