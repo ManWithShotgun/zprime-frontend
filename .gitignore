@@ -34,9 +34,8 @@ testem.log
 /typings
 yarn-error.log
 
-# e2e
-/e2e/*.js
-/e2e/*.map
+# express service
+/express/node_modules/*
 
 # System Files
 .DS_Store

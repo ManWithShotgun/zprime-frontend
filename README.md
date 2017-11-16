@@ -1,4 +1,14 @@
-# MyApp
+# Zprime frontend
+### Init project:
+1.1 cd express
+1.2 npm install
+2. (root dir) npm install
+
+### Run test server:
+1. cd express
+2. node server
+### Run app:
+1. npm start
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.3.2.
 

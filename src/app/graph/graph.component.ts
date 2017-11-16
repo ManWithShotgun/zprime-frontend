@@ -8,9 +8,12 @@ import { ZprimeService } from './ZprimeService';
     encapsulation: ViewEncapsulation.None,
     styleUrls: ['./graph.component.css']
 })
-export class Graph { 
+export class Graph {
 
     ngOnInit() {
+        fetch('/ws/monitors').then((response) => {return response.json();}).then((data)=> {
+            console.log(data);
+        });
         var data = [
             [7.04724001002674, 6.61475269982607],
             [469.966494833577, 0.0564702199413471],
