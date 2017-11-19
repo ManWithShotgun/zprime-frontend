@@ -10,6 +10,10 @@
 ### Run app:
 1. npm start
 
+### Build
+build: `ng build`
+or read doc about `ng build`
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.3.2.
 
 ## Development server
@@ -48,6 +52,5 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 [Tour of Heroes](https://angular.io/tutorial)
 [CLI Documentation](https://github.com/angular/angular-cli/wiki)
 
-build: `ng build`
-or read doc about `ng build`
+
 
